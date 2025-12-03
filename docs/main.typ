@@ -1,14 +1,7 @@
 #import "portada-template.typ": portada
 
 #let integrantes = (
-  "Conda Trujillo José Manuel",
-  "Delgado Vázquez Dulce Ivonne",
-  "Flores Roa Jorge Alejandro",
   "Gonzalez Calzada Maximiliano",
-  "Pérez Acuña Jorge Ysmael",
-  "Ramírez García Iossef Alejandro",
-  "Salazar Carmona Linette",
-  "Teodoro Rosales Mauricio"
 )
 
 #portada(
@@ -21,28 +14,28 @@
   "FECHA",
   "Ingeniería en informática",
   "Fundamentos de Inteligencia Artificial",
-  "Kaggle - Equipo 1",
+  "Práctica 12 - Modelo clasificador de imágenes",
   "6NM62",
   integrantes,
   "Gonzalez Arroyo Lilia",
-  "10 - 11 - 2025",
+  "03 - 12 - 2025",
 )
 
 #set text(
   font: "ITC Avant Garde Gothic",
-  lang: "es"
-  )
+  lang: "es",
+)
 
 
 #set page(
   paper: "us-letter",
   margin: (left: 3cm, top: 2.5cm, right: 2.5cm, bottom: 2.5cm),
-  numbering: "1"
+  numbering: "1",
 )
 
 #outline(
-  title: "Índice",   // Sets the title to Spanish
-  indent: auto,      // Indents sub-sections (1.1, 1.2)
+  title: "Índice", // Sets the title to Spanish
+  indent: auto, // Indents sub-sections (1.1, 1.2)
 )
 
 #pagebreak()
@@ -51,253 +44,169 @@
 #set list(indent: 1.5em)
 #v(1cm)
 
-#title("Informe Spotify")
+#title("Modelo clasificador de imágenes")
 
 = Introducción
-El análisis de datos se ha convertido en una herramienta fundamental para comprender
-fenómenos culturales, sociales y económicos a gran escala. En este contexto, la música
-representa uno de los elementos culturales más influyentes en la sociedad moderna. Gracias
-a plataformas digitales como Spotify, es posible estudiar patrones musicales a lo largo de un
-periodo histórico amplio y desde un enfoque cuantitativo.
-
-El presente informe analiza un conjunto de datos que contiene 586,672 canciones
-publicadas entre 1920 y 2020, con el objetivo de identificar tendencias históricas, patrones
-en las características musicales y cambios en la popularidad a lo largo del tiempo. Este
-análisis se inscribe dentro de un enfoque de análisis exploratorio de datos (EDA), utilizando
-estadísticas descriptivas y visualizaciones para extraer conclusiones significativas.
+El reconocimiento de dígitos escritos a mano es un problema fundamental en la visión por computadora. En esta práctica, exploramos el uso de Máquinas de Vectores de Soporte (SVM) para clasificar imágenes de dígitos del conjunto de datos de scikit-learn. Este enfoque permite entender cómo los algoritmos de aprendizaje supervisado pueden aprender patrones visuales a partir de datos de píxeles.
 
 = Objetivos e Hipótesis
 
 == Objetivo general
-Analizar la evolución de las características musicales y la popularidad de más de medio
-millón de canciones publicadas en Spotify entre los años 1920 y 2020.
+Implementar un modelo de clasificación de imágenes basado en SVM para identificar dígitos escritos a mano con alta precisión.
 
 == Objetivos específicos
-+ Examinar la producción musical anual a lo largo de un siglo.
-+ Analizar la variación de la popularidad promedio por década.
-+ Identificar relaciones entre características musicales como energy, danceability,
-valence y tempo.
-+ Determinar patrones estadísticos relevantes en las características sonoras.
-+ Formular conclusiones fundamentadas sobre la evolución musical desde un enfoque
-cuantitativo.
+- Cargar y explorar el conjunto de datos de dígitos de `sklearn`.
+- Preprocesar las imágenes transformándolas de matrices 2D a vectores 1D.
+- Entrenar un clasificador SVM utilizando un kernel lineal.
+- Evaluar el desempeño del modelo mediante métricas de precisión, recall y f1-score.
+- Visualizar los datos y los resultados para una mejor interpretación.
 
 == Hipótesis
-H1. La producción musical ha aumentado significativamente desde finales del siglo XX debido a la digitalización.
-
-H2. La popularidad promedio de las canciones ha aumentado con el paso de las décadas.
-
-H3. Existen correlaciones claras entre ciertas características musicales, como energy y tempo, o valence y danceability.
-
-H4. La popularidad no depende linealmente de una sola característica musical.  
-
-= Metodología
-
-El análisis se realizó en Python mediante bibliotecas especializadas como pandas y
-matplotlib, utilizando técnicas de análisis exploratorio de datos.
+Se plantea que un modelo SVM con kernel lineal será suficiente para clasificar correctamente la mayoría de los dígitos (>95% de precisión), dado que las imágenes de baja resolución (8x8) presentan características que suelen ser linealmente separables en un espacio de alta dimensión.
 
 == Dataset
-El conjunto de datos utilizado proviene de la plataforma Kaggle con el nombre:
-“Spotify Tracks 1920–2020” (tracks.csv) y contiene:
-
-- Filas: 586,672 canciones  
-- Columnas: 20 variables  
-- Incluye información sobre popularidad, duración, fecha de lanzamiento, energía, valencia, tempo, acústica, danza, entre otras.
+Se utilizó el conjunto de datos `digits` disponible en la biblioteca `scikit-learn`. Este dataset consta de 1797 imágenes de 8x8 píxeles, donde cada elemento representa un valor de escala de grises (0-16). Cada imagen está asociada a una etiqueta numérica del 0 al 9.
 
 == Limpieza de datos
-- No se encontraron valores faltantes en las variables principales.  
-- Las fechas se transformaron a formato de año.  
-- Se calculó la década mediante truncamiento del año.  
-- Todas las variables numéricas se conservaron en su tipo correcto.  
+El dataset ya se encuentra limpio y normalizado. El paso principal de preprocesamiento consistió en "aplanar" (reshape) las imágenes de 8x8 a vectores de 64 elementos, ya que el algoritmo SVM requiere una entrada unidimensional para cada muestra.
 
 == Procedimiento analítico
-+ Obtención de estadísticas descriptivas.  
-+ Creación de gráficas de tendencia (canciones por año y por década).  
-+ Construcción de mapa de calor para identificar correlaciones.  
-+ Interpretación de patrones y formulación de conclusiones.  
+1. *Carga de datos*: Importación del dataset y separación en características (X) y etiquetas (y).
+2. *Visualización*: Generación de una gráfica con muestras de los dígitos usando el mapa de color 'plasma' para resaltar intensidades.
+3. *División de datos*: Separación del conjunto en 80% para entrenamiento y 20% para prueba, asegurando reproducibilidad con una semilla aleatoria.
+4. *Entrenamiento*: Ajuste del modelo SVM lineal con los datos de entrenamiento.
+5. *Evaluación*: Predicción sobre el conjunto de prueba y cálculo de métricas de rendimiento.
 
 = Análisis y Resultados
 
 == Código fuente
-Código usado para la extracción de la información:
-```py
-# -------------------------------------------
-# Generación de 5 gráficas para el proyecto (Colab)
-# -------------------------------------------
+El código fue modificado para incluir comentarios explicativos, mejorar la visualización y guardar automáticamente la figura generada.
 
-import pandas as pd
+```python
+# Importar las bibliotecas necesarias
+# datasets: contiene conjuntos de datos de prueba, incluyendo el de dígitos
+# train_test_split: función para dividir los datos en conjuntos de entrenamiento y prueba
+# SVC: Support Vector Classifier, el algoritmo de clasificación que usaremos
+# classification_report, accuracy_score: métricas para evaluar el rendimiento del modelo
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, accuracy_score
 import matplotlib.pyplot as plt
-import io
 import os
 
-# 1) Cargamos el CSV
-df = pd.read_csv("tracks.csv")
+# Cargar el conjunto de datos de digitos
+# Este dataset contiene imágenes de 8x8 píxeles de dígitos escritos a mano
+digits = datasets.load_digits()
 
-# 2) Preparamos columnas 'year' y 'decade'
-df['year'] = pd.to_datetime(df['release_date'], errors='coerce').dt.year
-df['decade'] = (df['year'] // 10) * 10
+# Mostrar digitos en forma de arreglos (opcional descomentar para mirarlos)
+# print(digits)
 
-# Creamos carpeta para guardar imágenes
-os.makedirs("graficas", exist_ok=True)
+# Dividir los datos en características (X) y etiquetas (y)
+# X contiene las matrices de imágenes (los datos de entrada)
+# y contiene los números reales que representan cada imagen (las etiquetas)
+X = digits.images
+y = digits.target
 
-# ---------- GRAFICA 1: Número de canciones por año ----------
-year_counts = df['year'].value_counts().sort_index()
-plt.figure(figsize=(10,6))
-plt.plot(year_counts.index, year_counts.values)
-plt.xlabel("Año")
-plt.ylabel("Número de canciones")
-plt.title("Número de canciones por año")
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.savefig("graficas/canciones_por_año.png")
-plt.show()
+# Visualizar una muestra de las imágenes y etiquetas
+# Se mostrarán los primeros 5 dígitos del dataset para entender con qué estamos trabajando
+n_muestras = 5
+plt.figure(figsize=(10, 2))
+for i in range(n_muestras):
+    plt.subplot(1, n_muestras, i + 1)
+    # Usamos 'plasma' para una mejor visualización de la intensidad de los píxeles
+    plt.imshow(X[i], cmap='plasma')
+    plt.title(f"Digito {y[i]}")
+    plt.axis('off')
 
-# ---------- GRAFICA 2: Popularidad promedio por década ----------
-decade_popularity = df.groupby('decade')['popularity'].mean()
-plt.figure(figsize=(10,6))
-plt.plot(decade_popularity.index, decade_popularity.values)
-plt.xlabel("Década")
-plt.ylabel("Popularidad promedio")
-plt.title("Popularidad promedio por década")
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.savefig("graficas/popularidad_por_decada.png")
-plt.show()
+# Guardar la figura generada en la carpeta docs/media
+# Esto permite incluirla automáticamente en el reporte
+output_dir = "../docs/media"
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+plt.savefig(os.path.join(output_dir, "figure_1.png"))
+print(f"Figura guardada en {os.path.join(output_dir, 'figure_1.png')}")
+# plt.show() # Comentado para evitar bloqueo en ejecución automática
 
-# ---------- GRAFICA 3: Mapa de calor de correlaciones ----------
-cols = ["danceability","energy","valence","tempo","duration_ms","popularity"]
-corr = df[cols].corr()
-plt.figure(figsize=(8,6))
-plt.imshow(corr, cmap='viridis', interpolation='nearest')
-plt.xticks(range(len(cols)), cols, rotation=45, ha='right')
-plt.yticks(range(len(cols)), cols)
-plt.colorbar()
-plt.title("Mapa de calor de correlaciones")
-plt.tight_layout()
-plt.savefig("graficas/correlaciones.png")
-plt.show()
+# Preprocesar las imágenes a formato 1D
+# Las imágenes son matrices 2D (8x8), pero el modelo SVM requiere un vector 1D (64 elementos)
+# reshape transforma cada imagen de 8x8 a un vector de 64
+X = X.reshape([X.shape[0],-1])
 
-# ---------- GRAFICA 4: Energía promedio por década ----------
-energy_by_decade = df.groupby('decade')['energy'].mean()
-plt.figure(figsize=(10,6))
-plt.plot(energy_by_decade.index, energy_by_decade.values)
-plt.xlabel("Década")
-plt.ylabel("Energy promedio")
-plt.title("Energía promedio por década")
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.savefig("graficas/energy_por_decada.png")
-plt.show()
+# Dividir los datos en conjuntos de entrenamiento y prueba
+# Usamos el 20% de los datos para prueba (test_size=0.2) y el 80% para entrenamiento
+# random_state=43 asegura que la división sea reproducible
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=43)
 
-# ---------- GRAFICA 5: Valence promedio por década ----------
-valence_by_decade = df.groupby('decade')['valence'].mean()
-plt.figure(figsize=(10,6))
-plt.plot(valence_by_decade.index, valence_by_decade.values)
-plt.xlabel("Década")
-plt.ylabel("Valence (felicidad) promedio")
-plt.title("Valence promedio por década")
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.savefig("graficas/valence_por_decada.png")
-plt.show()
+# Crear un modelo de SVM con el kernel lineal
+# El kernel lineal es adecuado cuando los datos son linealmente separables
+modelo = SVC(kernel='linear')
 
-print("Gráficas guardadas en la carpeta 'graficas' del entorno de Colab.")
+# Entrenar el modelo con los datos de entrenamiento
+# El modelo aprende la relación entre los píxeles (X_train) y los dígitos (y_train)
+modelo.fit(X_train, y_train)
+
+# Predecir las etiquetas para el conjunto de pruebas
+# Usamos el modelo entrenado para predecir los dígitos de las imágenes que no ha visto (X_test)
+y_pred = modelo.predict(X_test)
+
+# Calcular la precisión del modelo
+# Comparamos las predicciones (y_pred) con los valores reales (y_test)
+precision = accuracy_score(y_test, y_pred)
+print(f"Precisión del modelo SVM con kernel lineal: {precision:.2f}")
+
+# Mostrar un informe de clasificación detallado
+# Incluye precision, recall, f1-score para cada dígito
+print("Informe de clasificación")
+print(classification_report(y_test, y_pred))
 ```
 
-== Estadísticos descriptivos
-
-#table(
-  columns: 6,
-  align: (col, row) => if col == 0 { left } else { center }, // Left align first column
-  inset: 6pt,
-  stroke: 0.6pt,
-  fill: (_, row) => if row == 0 { luma(230) }, // Light gray header
-  
-  // Use table.header so it repeats if the table breaks across pages
-  table.header(
-    [*Variable*], [*Media*], [*Mediana*], [*Mínimo*], [*Máximo*], [*Desv. Est.*],
-  ),
-
-  "Popularity", "27.57", "27", "0", "100", "18.37",
-  "Danceability", "0.56", "0.577", "0.000", "0.991", "0.166",
-  "Energy", "0.54", "0.549", "0.000", "1.000", "0.251",
-  "Valence", "0.55", "0.564", "0.000", "1.000", "0.257",
-  "Tempo (BPM)", "118.46", "117.38", "0.0", "246.38", "29.76",
-  "Duration_ms", "230,051", "214,893", "3,344", "5,621,218", "126,526",
-)
-
-Estos valores muestran que las canciones modernas mantienen una duración promedio
-estable (entre 3 y 4 minutos), así como un tempo promedio de aproximadamente 118 BPM.
-
-== Producción musical por año
-La gráfica de producción musical revela un crecimiento lento entre 1920 y 1950, seguido de
-un incremento significativo entre los años 60 y 80. A partir de la década de los 90, la cantidad
-de canciones publicadas crece exponencialmente, coincidiendo con el surgimiento de la
-digitalización y la democratización de la producción musical.
+== Figura generada
 
 #figure(
-  image("media/grafica1.png", width: 50%),
+  image("media/figure_1.png", width: 80%),
   caption: [
-    _Gráfica generada_ Producción musical por año
+    _Figura generada_ Muestra de dígitos del dataset con mapa de color 'plasma'.
   ],
-)<grafica1>
+)<figure_1>
 
-== Popularidad promedio por década
-La popularidad promedio aumenta de forma sostenida a lo largo de las décadas. Las
-canciones de las décadas de 2000 y 2010 presentan los valores más altos, lo que refleja el
-impacto de las plataformas digitales, algoritmos de recomendación y mayor alcance global.
+== Interpretación de Resultados
 
-#figure(
-  image("media/grafica2.png", width: 50%),
-  caption: [
-    _Gráfica generada_ Popularidad promedio por década
-  ],
-)<grafica2>
+El modelo obtuvo una *precisión global del 98%*, lo cual valida nuestra hipótesis inicial.
 
-== Correlaciones musicales
-El mapa de calor evidencia relaciones entre variables:
+Del informe de clasificación obtenido en la terminal:
+- *Precisión perfecta (1.00)*: Los dígitos 0, 2, 3, 4, 6 y 8 fueron clasificados con muy alta precisión.
+- *Áreas de mejora*: El dígito 1 tuvo una precisión de 0.91, lo que indica algunos falsos positivos (otros números clasificados erróneamente como 1). El dígito 9 tuvo un recall de 0.92, indicando que algunos 9 reales no fueron identificados correctamente.
+- *F1-Score*: El promedio ponderado del F1-score es 0.98, lo que demuestra un equilibrio excelente entre precisión y exhaustividad.
 
-- Energy y tempo: correlación positiva; las canciones rápidas tienden a ser más energéticas.  
-- Valence y danceability: correlación positiva; las canciones alegres suelen ser más bailables.  
-- Popularity: no presenta una correlación fuerte con ninguna variable individual, lo que sugiere que la popularidad está influida por factores externos como promociones, tendencias o artistas.
+```text
+Precisión del modelo SVM con kernel lineal: 0.98
+Informe de clasificación
+              precision    recall  f1-score   support
 
-#figure(
-  image("media/grafica3.png", width: 50%),
-  caption: [
-    _Gráfica generada_ Correlaciones musicales
-  ],
-)<grafica3>
+           0       1.00      1.00      1.00        42
+           1       0.91      1.00      0.96        32
+           2       1.00      1.00      1.00        25
+           3       1.00      0.96      0.98        25
+           4       1.00      0.98      0.99        44
+           5       0.94      1.00      0.97        30
+           6       1.00      1.00      1.00        41
+           7       0.97      1.00      0.99        39
+           8       1.00      0.93      0.96        43
+           9       0.95      0.92      0.94        39
+
+    accuracy                           0.98       360
+   macro avg       0.98      0.98      0.98       360
+weighted avg       0.98      0.98      0.98       360
+```
 
 = Conclusiones
 
-- La producción musical creció exponencialmente en los últimos treinta años, evidenciando el impacto de la digitalización y las plataformas digitales.  
-- La popularidad promedio por década también ha aumentado, alcanzando sus niveles más altos en los años 2000–2020.  
-- Las características musicales presentan patrones coherentes: la música alegre tiende a ser más bailable, y las canciones rápidas suelen ser más energéticas.  
-- La popularidad no puede explicarse por un único factor cuantitativo; es un fenómeno complejo que depende de múltiples variables.  
-- El dataset permite realizar análisis confiables gracias a su volumen, limpieza y consistencia.
+1. *Eficacia del SVM*: El algoritmo SVM con kernel lineal es altamente efectivo para el reconocimiento de dígitos en imágenes de baja resolución, logrando un 98% de exactitud con un costo computacional bajo.
+2. *Importancia del Preprocesamiento*: La transformación de las imágenes a vectores 1D es un paso crucial que permite al algoritmo procesar la información espacial como características independientes.
+3. *Visualización*: El uso de mapas de color como 'plasma' ayuda a distinguir mejor los niveles de intensidad en las imágenes, facilitando la inspección visual de los datos.
 
 = Investigaciones futuras
 
-- Integrar información de géneros musicales para profundizar en diferencias estilísticas.  
-- Construir modelos predictivos de popularidad mediante machine learning.  
-- Analizar artistas específicos y su evolución sonora.  
-- Extender el análisis a diferentes regiones o países.  
-- Incorporar metadata externa como tendencias de redes sociales.  
-
-= Referencias
-
-Basaldúa, P. (2022). Guía de presentación para análisis de datos.
-
-Dataset: Spotify Tracks 1920–2020, Kaggle. Disponible en:
-#link("https://www.kaggle.com/datasets/javivaleiras/spotify-tracks-19202020")[
-  *Kaggle*
-]
-
-Código: Google Colab, Colab. Disponible en:
-#link("https://colab.research.google.com/drive/1fkhhJQiAJU2arkA0BiC-KVmleKIFG530?usp=sharing")[
-  *Google Colab*
-]
-
-Documento (Código fuente): Typst, repositorio público Disponible en:
-#link("https://github.com/MaxKeenti/kaggle-EQ1.git")[
-  *Github*
-]
+- Evaluar el rendimiento con kernels no lineales (RBF, polinomial) para ver si se puede alcanzar el 100% de precisión.
+- Probar el modelo con imágenes de dígitos escritos a mano por los propios usuarios para verificar su robustez en escenarios reales.
