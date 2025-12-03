@@ -41,7 +41,7 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 plt.savefig(os.path.join(output_dir, "figure_1.png"))
 print(f"Figura guardada en {os.path.join(output_dir, 'figure_1.png')}")
-# plt.show() # Comentado para evitar bloqueo en ejecución automática
+plt.show() # Comentado para evitar bloqueo en ejecución automática
 
 # Preprocesar las imágenes a formato 1D
 # Las imágenes son matrices 2D (8x8), pero el modelo SVM requiere un vector 1D (64 elementos)
